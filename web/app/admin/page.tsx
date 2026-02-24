@@ -52,17 +52,22 @@ function statusBadgeClass(status: string): string {
 
 export default function AdminPage() {
   const router = useRouter();
-  const supabase = getSupabaseBrowserClient();
+  const supabase = useMemo(
+    () => (typeof window === 'undefined' ? null : getSupabaseBrowserClient()),
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
   const [users, setUsers] = useState<TrialUserRow[]>([]);
 
-  const authHeaders = useMemo(
-    () => accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-    [accessToken],
-  );
+  const authHeaders = useMemo<Record<string, string>>(() => {
+    if (!accessToken) {
+      return {} as Record<string, string>;
+    }
+    return { Authorization: `Bearer ${accessToken}` };
+  }, [accessToken]);
 
   const loadDashboard = useCallback(async () => {
     if (!accessToken) {
@@ -97,6 +102,7 @@ export default function AdminPage() {
   }, [accessToken, authHeaders]);
 
   useEffect(() => {
+    if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
         router.replace('/');
@@ -111,6 +117,7 @@ export default function AdminPage() {
   }, [loadDashboard]);
 
   async function signOut() {
+    if (!supabase) return;
     await supabase.auth.signOut();
     router.replace('/');
   }

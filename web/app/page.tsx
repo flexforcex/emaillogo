@@ -1,18 +1,22 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 export default function LandingPage() {
   const router = useRouter();
-  const supabase = getSupabaseBrowserClient();
+  const supabase = useMemo(
+    () => (typeof window === 'undefined' ? null : getSupabaseBrowserClient()),
+    [],
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         router.replace('/admin');
@@ -22,6 +26,10 @@ export default function LandingPage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!supabase) {
+      setMessage('Supabase client is not ready yet.');
+      return;
+    }
     setLoading(true);
     setMessage(null);
 
