@@ -16,12 +16,14 @@ Production-lean monorepo for the Flex Force X 50-person iOS trial.
 
 ## Current implementation phase
 
-This commit bootstraps:
+Implemented so far:
 
 - monorepo structure
 - Supabase schema migrations
 - Row Level Security (RLS) policies
 - local SQL seed data for trial simulation
+- Edge Functions for Terra webhook/connect/status and admin metrics
+- function unit tests + webhook replay runner script
 
 ## Quick start (Supabase local)
 
@@ -30,9 +32,23 @@ This commit bootstraps:
 2. From repo root:
    - `supabase start`
    - `supabase db reset` (applies migrations + `supabase/seed.sql`)
+   - `supabase functions serve --env-file ./supabase/.env.local`
 3. Inspect generated API:
    - Studio: `http://127.0.0.1:54323`
    - API: `http://127.0.0.1:54321`
+
+## Useful commands
+
+```bash
+# Bootstrap remote project with migrations/functions
+PROJECT_REF=<REPLACE_ME> ./scripts/bootstrap-supabase.sh
+
+# Replay sample Terra webhook against local function
+TERRA_WEBHOOK_SECRET=<REPLACE_ME> node scripts/replay-terra-webhook.mjs
+
+# Run function unit tests
+cd supabase/functions && deno test tests
+```
 
 ## Environment variables
 

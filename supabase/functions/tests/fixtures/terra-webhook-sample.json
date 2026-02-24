@@ -1,0 +1,19 @@
+{
+  "id": "evt_test_001",
+  "type": "daily_summary",
+  "user": {
+    "user_id": "terra_trial_user_1"
+  },
+  "timestamp": "2026-02-24T07:30:00.000Z",
+  "data": [
+    {
+      "date": "2026-02-23",
+      "steps": 8345,
+      "sleep_duration_seconds": 25200,
+      "hrv": 41.5,
+      "resting_heart_rate": 55,
+      "active_calories": 612,
+      "active_duration_minutes": 58
+    }
+  ]
+}

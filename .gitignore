@@ -21,6 +21,8 @@ coverage/
 .env
 .env.*
 !.env.example
+!.env.local.example
+!supabase/.env.local.example
 
 # Supabase local artifacts
 .supabase/
